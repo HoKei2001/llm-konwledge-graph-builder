@@ -1,0 +1,74 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    ports:
+      - "8502:8502"
+    volumes:
+      - ~/.ssh/id_rsa:/opt/motiong/.ssh/id_rsa
+      - ..:/opt/motiong/code
+      - ~/etc/localtime:/opt/motiong/etc/localtime
+      - ~/etc/timezone:/opt/motiong/etc/timezone
+      - ../.devcontainer/.zshrc:/opt/motiong/.zshrc
+    command: ["tail -f /dev/null"]
+    # depends_on:
+    #   - neo4j
+    #   - weaviate
+    environment:
+      PYTHONPATH: /opt/motiong/code
+
+  # neo4j:
+  #   # Docker image to be used
+  #   image: neo4j:5.22.0
+  #   # The ports that will be accessible from outside the container - HTTP (7474) and Bolt (7687).
+  #   ports:
+  #     - "7474:7474"
+  #     - "7687:7687"
+
+  #   # Passes the following environment variables to the container
+  #   environment:
+  #     # community edition, username must be neo4j..
+  #     - NEO4J_AUTH=neo4j/very-cool-password
+  #     # Enable APOC plugin
+  #     - NEO4JLABS_PLUGINS=["apoc"]
+  #     # Enable file export in APOC
+  #     - NEO4J_apoc_export_file_enabled=true
+  #     # Enable file import in APOC
+  #     - NEO4J_apoc_import_file_enabled=true
+  #     # Use Neo4j config for import file handling
+  #     - NEO4J_apoc_import_file_use__neo4j__config=true
+
+    # volumes:
+    #   - ~/project/knowledge-graph-experimental/neo4j_repo/neo4j-data:/data  # 数据持久化
+    #   - ~/project/knowledge-graph-experimental/neo4j_repo/neo4j-logs:/logs  # 日志持久化
+    #   - ~/project/knowledge-graph-experimental/neo4j_repo/neo4j-import:/var/lib/neo4j/import  # 数据导入持久化（可选）
+    #   - ~/project/knowledge-graph-experimental/neo4j_repo/neo4j-plugins:/plugins  # 添加插件卷（新增）
+    # healthcheck:
+    #   test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1"]
+
+
+  # weaviate:
+  #   command:
+  #   - --host
+  #   - 0.0.0.0
+  #   - --port
+  #   - '8088'
+  #   - --scheme
+  #   - http
+  #   image: cr.weaviate.io/semitechnologies/weaviate:1.26.4
+  #   ports:
+  #   - 8088:8088
+  #   - 50051:50051
+  #   volumes:
+  #   - ~/project/knowledge-graph-experimental/weaviate_repo:/var/lib/weaviate
+  #   restart: on-failure:0
+  #   environment:
+  #     QUERY_DEFAULTS_LIMIT: 25
+  #     AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+  #     PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+  #     DEFAULT_VECTORIZER_MODULE: 'none'
+  #     ENABLE_API_BASED_MODULES: 'true'
+  #     CLUSTER_HOSTNAME: 'node1'
